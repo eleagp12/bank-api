@@ -1,30 +1,21 @@
-const jwt = require('jsonwebtoken');
+import jwt from 'jsonwebtoken';
 
-function authenticateToken(req, res, next) {
-  const authHeader = req.headers.authorization;
+export function authenticateToken(req, res, next) {
+  const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
 
-  if (!token) {
-    return res.status(401).json({ error: 'Missing token' });
-  }
+  if (!token) return res.sendStatus(401);
 
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = decoded; // { userId, role }
+  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+    if (err) return res.sendStatus(403);
+    req.user = user;
     next();
-  } catch (err) {
-    return res.status(403).json({ error: 'Invalid token' });
-  }
+  });
 }
 
-function authorizeAdmin(req, res, next) {
+export function authorizeAdmin(req, res, next) {
   if (req.user.role !== 'admin') {
-    return res.status(403).json({ error: 'Admins only' });
+    return res.sendStatus(403);
   }
   next();
 }
-
-module.exports = {
-  authenticateToken,
-  authorizeAdmin,
-};

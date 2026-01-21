@@ -1,6 +1,8 @@
-require('dotenv').config();
-const pool = require('../db');
-const bcrypt = require('bcrypt');
+import dotenv from 'dotenv';
+dotenv.config();
+
+import pool from '../db.js';
+import bcrypt from 'bcrypt';
 
 (async () => {
   const pinHash = await bcrypt.hash('4444', 10);

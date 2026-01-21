@@ -1,10 +1,18 @@
-require('dotenv').config();
-const express = require('express');
-const cors = require('cors');
-const path = require('path');
+import dotenv from 'dotenv';
+dotenv.config();
 
-const authRoutes = require('./routes/auth.routes');
-const accountRoutes = require('./routes/accounts.routes'); // ← singular
+import express from 'express';
+import cors from 'cors';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+// ROUTES (ESM imports)
+import authRoutes from './routes/auth.routes.js';
+import accountRoutes from './routes/accounts.routes.js';
+
+// __dirname replacement for ESM
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 
@@ -24,6 +32,11 @@ app.get('/', (req, res) => {
 });
 
 const PORT = 3000;
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
-});
+
+if (process.env.NODE_ENV !== 'test') {
+  app.listen(PORT, () => {
+    console.log(`Server running on http://localhost:${PORT}`);
+  });
+}
+
+export default app;
