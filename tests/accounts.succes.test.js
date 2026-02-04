@@ -23,7 +23,10 @@ beforeAll(async () => {
   // 🔐 Login as admin
   const adminRes = await request(app)
     .post('/auth/login')
-    .send({ username: 'su', pin: '3333' });
+    .send({
+      username: process.env.TEST_ADMIN_USERNAME,
+      pin: process.env.TEST_ADMIN_PIN,
+    });
 
   adminToken = adminRes.body.token;
   expect(adminToken).toBeDefined();
@@ -55,7 +58,7 @@ describe('Accounts – success paths (coverage)', () => {
       .post(`/accounts/${accountId}/transfer`)
       .set('Authorization', `Bearer ${userToken}`)
       .send({
-        toUsername: 'su',
+        toUsername: process.env.TEST_ADMIN_USERNAME,
         amount: 1,
       });
 
