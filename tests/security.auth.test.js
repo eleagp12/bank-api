@@ -64,7 +64,7 @@ describe('Security – authentication enforcement', () => {
     const res = await request(app)
       .delete('/accounts/by-username')
       .set('Authorization', `Bearer ${userToken}`)
-      .send({ targetUsername: 'su' });
+      .send({ targetUsername: process.env.TEST_ADMIN_USERNAME });
 
     expect(res.statusCode).toBe(403);
   });
@@ -94,7 +94,7 @@ describe('Security – authentication enforcement', () => {
     const res = await request(app)
       .post(`/accounts/${accountId}/transfer`)
       .set('Authorization', `Bearer ${userToken}`)
-      .send({ toUsername: 'su', amount: -100 });
+      .send({ toUsername: process.env.TEST_ADMIN_USERNAME, amount: -100 });
 
     expect(res.statusCode).toBe(400);
   });
@@ -112,7 +112,7 @@ describe('Security – authentication enforcement', () => {
     const res = await request(app)
       .delete('/accounts/by-username')
       .set('Authorization', `Bearer ${userToken}`)
-      .send({ targetUsername: 'su' });
+      .send({ targetUsername: process.env.TEST_ADMIN_USERNAME });
 
     expect(res.statusCode).toBe(403);
   });

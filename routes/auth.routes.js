@@ -5,9 +5,6 @@ import pool from '../db.js';
 
 const router = Router();
 
-/* ======================
-   LOGIN
-====================== */
 router.post('/login', async (req, res) => {
   const { username, pin } = req.body;
 
@@ -49,9 +46,6 @@ router.post('/login', async (req, res) => {
   }
 });
 
-/* ======================
-   REGISTER
-====================== */
 router.post('/register', async (req, res) => {
   const { name, lastName, username, email, password, confirmPassword } =
     req.body;

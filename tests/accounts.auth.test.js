@@ -5,16 +5,18 @@ let userToken;
 let adminToken;
 
 beforeAll(async () => {
-  const userRes = await request(app).post('/auth/login').send({
-    username: 'vodo',
-    pin: 'vodochild',
-  });
+  const userRes = await request(app)
+    .post('/auth/login')
+    .send({
+      username: process.env.TEST_USER_USERNAME || 'testuser',
+      pin: process.env.TEST_USER_PIN || 'testpin',
+    });
 
   userToken = userRes.body.token;
 
   const adminRes = await request(app).post('/auth/login').send({
-    username: 'su',
-    pin: '3333',
+    username: process.env.TEST_ADMIN_USERNAME,
+    pin: process.env.TEST_ADMIN_PIN,
   });
 
   adminToken = adminRes.body.token;
@@ -56,10 +58,11 @@ describe('Accounts authorization', () => {
   });
 
   it('should return 400 when pin is missing', async () => {
-    const res = await request(app).post('/auth/login').send({
-      username: 'vodo',
-      // pin missing
-    });
+    const res = await request(app)
+      .post('/auth/login')
+      .send({
+        username: process.env.TEST_USER_USERNAME || 'testuser',
+      });
 
     expect(res.statusCode).toBe(400);
     expect(res.body.error).toBe('Missing credentials');
@@ -73,10 +76,13 @@ describe('Accounts authorization', () => {
   });
 
   it('should return 400 when username is a string name', async () => {
-    const res = await request(app).post('/auth/login').send({
-      username: '',
-      pin: 'vodochild',
-    });
+    const res = await request(app)
+      .post('/auth/login')
+      .send({
+        username: '',
+
+        pin: process.env.TEST_USER_PIN || 'testpin',
+      });
 
     expect(res.statusCode).toBe(400);
     expect(res.body.error).toBe('Missing credentials');
@@ -93,20 +99,25 @@ describe('Accounts authorization', () => {
   });
 
   it('should return 401 when pin is incorrect', async () => {
-    const res = await request(app).post('/auth/login').send({
-      username: 'vodo',
-      pin: 'wrongpin',
-    });
+    const res = await request(app)
+      .post('/auth/login')
+      .send({
+        username: process.env.TEST_USER_USERNAME || 'testuser',
+
+        pin: 'wrongpin',
+      });
 
     expect(res.statusCode).toBe(401);
     expect(res.body.error).toBe('Invalid credentials');
   });
 
   it('should succesfuly log in with corect credentials', async () => {
-    const res = await request(app).post('/auth/login').send({
-      username: 'vodo',
-      pin: 'vodochild',
-    });
+    const res = await request(app)
+      .post('/auth/login')
+      .send({
+        username: process.env.TEST_USER_USERNAME || 'testuser',
+        pin: process.env.TEST_USER_PIN || 'testpin',
+      });
 
     expect(res.statusCode).toBe(200);
     expect(res.body).toHaveProperty('token');
@@ -117,10 +128,12 @@ describe('Accounts authorization', () => {
   });
 
   it('should return a valid JWT token on succesful token', async () => {
-    const res = await request(app).post('/auth/login').send({
-      username: 'vodo',
-      pin: 'vodochild',
-    });
+    const res = await request(app)
+      .post('/auth/login')
+      .send({
+        username: process.env.TEST_USER_USERNAME || 'testuser',
+        pin: process.env.TEST_USER_PIN || 'testpin',
+      });
 
     expect(res.statusCode).toBe(200);
 
@@ -141,21 +154,19 @@ describe('Accounts authorization', () => {
     expect(res.body.error).toBe('Invalid credentials');
   });
 
-  it('should return 500 on database error (covered by catch block)', async () => {
-    // This tests the catch block at line 47-50
-    // In real scenario, you'd mock the database to throw an error
-    // For now, this test documents the expected behavior
-  });
+  it('should return 500 on database error (covered by catch block)', async () => {});
 
   it('should return 409 when username already exists', async () => {
-    const res = await request(app).post('/auth/register').send({
-      name: 'John',
-      lastName: 'Doe',
-      username: 'vodo', // Existing username
-      email: 'newemail@test.com',
-      password: '12345678',
-      confirmPassword: '12345678',
-    });
+    const res = await request(app)
+      .post('/auth/register')
+      .send({
+        name: 'John',
+        lastName: 'Doe',
+        username: process.env.TEST_USER_USERNAME || 'testuser',
+        email: 'newemail@test.com',
+        password: '12345678',
+        confirmPassword: '12345678',
+      });
 
     expect(res.statusCode).toBe(409);
     expect(res.body.error).toBe('User already exists');
@@ -163,15 +174,14 @@ describe('Accounts authorization', () => {
 
   it('should return 409 when email already exists', async () => {
     const res = await request(app).post('/auth/register').send({
-      name: 'John',
-      lastName: 'Doe',
+      name: 'pepe',
+      lastName: 'papa',
       username: 'newusername123',
       email: 'superman@mail.com',
       password: '12345678',
       confirmPassword: '12345678',
     });
 
-    // This will be 409 if email exists, or 201 if it doesn't
     expect([201, 409]).toContain(res.statusCode);
   });
 
@@ -358,10 +368,12 @@ describe('Auth Edge Cases', () => {
     const promises = Array(5)
       .fill(null)
       .map(() =>
-        request(app).post('/auth/login').send({
-          username: 'vodo',
-          pin: 'vodochild',
-        }),
+        request(app)
+          .post('/auth/login')
+          .send({
+            username: process.env.TEST_USER_USERNAME || 'testuser',
+            pin: process.env.TEST_USER_PIN || 'testpin',
+          }),
       );
 
     const results = await Promise.all(promises);
