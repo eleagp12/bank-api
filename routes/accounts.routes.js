@@ -1,17 +1,27 @@
 import express from 'express';
 import pool from '../db.js';
 import { authenticateToken, authorizeAdmin } from '../middleware/auth.js';
+import { validate as isUUID } from 'uuid';
 
 const router = express.Router();
 
 /* =========================
-   GET ACCOUNT + TRANSACTIONS
+   GET USER ACCOUNT
 ========================= */
 router.get('/user/:userId', authenticateToken, async (req, res) => {
+  console.log('ID param:', req.params.userId);
   try {
     const { userId } = req.params;
 
-    if (req.user.userId !== userId && req.user.role !== 'admin') {
+    if (!isUUID(userId)) {
+      return res.status(400).json({ error: 'Invalid user id' });
+    }
+
+    if (req.user.role === 'admin') {
+      return res.status(403).json({ error: 'Forbidden' });
+    }
+
+    if (userId !== req.user.userId) {
       return res.status(403).json({ error: 'Forbidden' });
     }
 
@@ -58,16 +68,26 @@ router.post('/:accountId/transfer', authenticateToken, async (req, res) => {
   }
 
   try {
+    // 🔒 ENSURE USER OWNS THE ACCOUNT (THIS IS THE FIX)
+    const ownerCheck = await pool.query(
+      `SELECT user_id FROM accounts WHERE id = $1`,
+      [accountId],
+    );
+
+    if (ownerCheck.rowCount === 0) {
+      return res.status(404).json({ error: 'Account not found' });
+    }
+
+    if (ownerCheck.rows[0].user_id !== req.user.userId) {
+      return res.status(403).json({ error: 'Forbidden' });
+    }
+
     await pool.query('BEGIN');
 
     const senderRes = await pool.query(
       `SELECT id, balance FROM accounts WHERE id = $1`,
       [accountId],
     );
-
-    if (senderRes.rowCount === 0) {
-      throw new Error('Sender account not found');
-    }
 
     const sender = senderRes.rows[0];
 
@@ -76,7 +96,8 @@ router.post('/:accountId/transfer', authenticateToken, async (req, res) => {
     }
 
     const receiverRes = await pool.query(
-      `SELECT a.id FROM accounts a
+      `SELECT a.id
+       FROM accounts a
        JOIN users u ON u.id = a.user_id
        WHERE u.username = $1`,
       [toUsername],
