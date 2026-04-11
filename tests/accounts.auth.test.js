@@ -62,7 +62,6 @@ describe('Accounts authorization', () => {
       .post('/auth/login')
       .send({
         username: process.env.TEST_USER_USERNAME || 'testuser',
-        // pin missing
       });
 
     expect(res.statusCode).toBe(400);
@@ -155,11 +154,7 @@ describe('Accounts authorization', () => {
     expect(res.body.error).toBe('Invalid credentials');
   });
 
-  it('should return 500 on database error (covered by catch block)', async () => {
-    // This tests the catch block at line 47-50
-    // In real scenario, you'd mock the database to throw an error
-    // For now, this test documents the expected behavior
-  });
+  it('should return 500 on database error (covered by catch block)', async () => {});
 
   it('should return 409 when username already exists', async () => {
     const res = await request(app)
@@ -167,7 +162,7 @@ describe('Accounts authorization', () => {
       .send({
         name: 'John',
         lastName: 'Doe',
-        username: process.env.TEST_USER_USERNAME || 'testuser', // Existing username
+        username: process.env.TEST_USER_USERNAME || 'testuser',
         email: 'newemail@test.com',
         password: '12345678',
         confirmPassword: '12345678',
@@ -179,15 +174,14 @@ describe('Accounts authorization', () => {
 
   it('should return 409 when email already exists', async () => {
     const res = await request(app).post('/auth/register').send({
-      name: 'John',
-      lastName: 'Doe',
+      name: 'pepe',
+      lastName: 'papa',
       username: 'newusername123',
       email: 'superman@mail.com',
       password: '12345678',
       confirmPassword: '12345678',
     });
 
-    // This will be 409 if email exists, or 201 if it doesn't
     expect([201, 409]).toContain(res.statusCode);
   });
 

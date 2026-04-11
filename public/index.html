@@ -15,13 +15,9 @@
   </head>
 
   <body>
-    <!-- =========================
-         TOP NAVIGATION
-    ========================== -->
     <nav>
       <p class="welcome">Log in to get started</p>
 
-      <!-- LOGIN -->
       <form class="login">
         <input
           type="text"
@@ -38,10 +34,8 @@
         <button type="button" class="login__btn">&rarr;</button>
       </form>
 
-      <!-- LOGOUT -->
       <button type="button" class="btn--logout hidden">Logout</button>
 
-      <!-- REGISTER -->
       <form class="register hidden">
         <input
           type="text"
@@ -82,7 +76,6 @@
         <button type="button" class="register__btn">Create account</button>
       </form>
 
-      <!-- REGISTER NAV BUTTONS -->
       <button type="button" class="btn--show-register">
         Create new account
       </button>
@@ -92,11 +85,7 @@
       </button>
     </nav>
 
-    <!-- =========================
-         MAIN APP
-    ========================== -->
     <main class="app">
-      <!-- BALANCE -->
       <div class="balance">
         <div>
           <p class="balance__label">Current balance</p>
@@ -105,10 +94,8 @@
         <p class="balance__value">0.00$</p>
       </div>
 
-      <!-- MOVEMENTS -->
       <div class="movements"></div>
 
-      <!-- SUMMARY -->
       <div class="summary">
         <p class="summary__label">In</p>
         <p class="summary__value summary__value--in">0.00$</p>
@@ -122,7 +109,6 @@
         <button class="btn--sort">&downarrow; SORT</button>
       </div>
 
-      <!-- TRANSFER -->
       <div class="operation operation--transfer">
         <h2>Transfer money</h2>
         <form class="form form--transfer">
@@ -136,7 +122,6 @@
         </form>
       </div>
 
-      <!-- LOAN -->
       <div class="operation operation--loan">
         <h2>Request loan</h2>
         <form class="form form--loan">
@@ -148,7 +133,6 @@
         </form>
       </div>
 
-      <!-- ADMIN: CLOSE ACCOUNT -->
       <div class="operation operation--close">
         <h2>Close account</h2>
         <form class="form form--close">
@@ -166,7 +150,6 @@
         </form>
       </div>
 
-      <!-- LOGOUT TIMER -->
       <p class="logout-timer">
         You will be logged out in <span class="timer">05:00</span>
       </p>

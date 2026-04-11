@@ -1,14 +1,8 @@
 'use strict';
 
-/* =========================
-   GLOBAL STATES 
-========================= */
 let currentAccount = null;
 let currentUserRole = null;
 
-/* =========================
-   DOM ELEMENTS
-========================= */
 const labelWelcome = document.querySelector('.welcome');
 const labelBalance = document.querySelector('.balance__value');
 const labelTimer = document.querySelector('.timer');
@@ -46,14 +40,8 @@ const inputRegEmail = document.querySelector('.register__input--email');
 const inputRegPass = document.querySelector('.register__input--password');
 const inputRegConfirm = document.querySelector('.register__input--confirm');
 
-/* =========================
-   GLOBAL STATE
-========================= */
 let logoutTimer;
 
-/* =========================
-   API HELPERS
-========================= */
 async function apiLogin(username, password) {
   const res = await fetch('http://localhost:3000/auth/login', {
     method: 'POST',
@@ -135,9 +123,6 @@ async function loadAccount(userId) {
   calcDisplaySummary(currentAccount.movements, currentAccount.interestRate);
 }
 
-/* =========================
-   LOGOUT TIMER
-========================= */
 function startLogoutTimer() {
   let time = 300;
 
@@ -175,11 +160,6 @@ function logout() {
   registerForm.classList.add('hidden');
 }
 
-/* =========================
-   EVENTS
-========================= */
-
-// 🔐 LOGIN
 btnLogin.addEventListener('click', async e => {
   e.preventDefault();
 
@@ -221,7 +201,6 @@ btnShowRegister.addEventListener('click', () => {
   btnBackLogin.classList.remove('hidden');
 });
 
-// 🔙 BACK TO LOGIN
 btnBackLogin.addEventListener('click', () => {
   registerForm.classList.add('hidden');
   loginForm.classList.remove('hidden');
@@ -230,7 +209,6 @@ btnBackLogin.addEventListener('click', () => {
   btnBackLogin.classList.add('hidden');
 });
 
-// 🆕 REGISTER
 btnRegister.addEventListener('click', async e => {
   e.preventDefault();
 
@@ -256,7 +234,6 @@ btnRegister.addEventListener('click', async e => {
   }
 });
 
-// TRANSFER MONEY
 btnTransfer.addEventListener('click', async e => {
   e.preventDefault();
 
@@ -289,7 +266,6 @@ btnTransfer.addEventListener('click', async e => {
   }
 });
 
-// LOAN HANDLER
 btnLoan.addEventListener('click', async e => {
   e.preventDefault();
 
@@ -320,7 +296,6 @@ btnLoan.addEventListener('click', async e => {
   }
 });
 
-// CLOSE ACCOUNT
 btnClose.addEventListener('click', async e => {
   e.preventDefault();
 

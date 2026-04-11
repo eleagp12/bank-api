@@ -7,31 +7,25 @@ let userId;
 let accountId;
 
 beforeAll(async () => {
-  // 🔐 Login as normal user
   const userRes = await request(app)
     .post('/auth/login')
     .send({ username: 'vodo', pin: 'vodochild' });
 
   userToken = userRes.body.token;
 
-  // 🔧 FIX: your API returns id directly, not user.id
   userId = userRes.body.userId || userRes.body.id;
 
   expect(userToken).toBeDefined();
   expect(userId).toBeDefined();
 
-  // 🔐 Login as admin
-  const adminRes = await request(app)
-    .post('/auth/login')
-    .send({
-      username: process.env.TEST_ADMIN_USERNAME,
-      pin: process.env.TEST_ADMIN_PIN,
-    });
+  const adminRes = await request(app).post('/auth/login').send({
+    username: process.env.TEST_ADMIN_USERNAME,
+    pin: process.env.TEST_ADMIN_PIN,
+  });
 
   adminToken = adminRes.body.token;
   expect(adminToken).toBeDefined();
 
-  // 📦 Fetch user account (needed for transfer + loan)
   const accRes = await request(app)
     .get(`/accounts/user/${userId}`)
     .set('Authorization', `Bearer ${userToken}`);

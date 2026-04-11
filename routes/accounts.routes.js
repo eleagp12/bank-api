@@ -5,9 +5,6 @@ import { validate as isUUID } from 'uuid';
 
 const router = express.Router();
 
-/* =========================
-   GET USER ACCOUNT
-========================= */
 router.get('/user/:userId', authenticateToken, async (req, res) => {
   console.log('ID param:', req.params.userId);
   try {
@@ -56,9 +53,6 @@ router.get('/user/:userId', authenticateToken, async (req, res) => {
   }
 });
 
-/* =========================
-   TRANSFER MONEY
-========================= */
 router.post('/:accountId/transfer', authenticateToken, async (req, res) => {
   const { accountId } = req.params;
   const { toUsername, amount } = req.body;
@@ -68,7 +62,6 @@ router.post('/:accountId/transfer', authenticateToken, async (req, res) => {
   }
 
   try {
-    // 🔒 ENSURE USER OWNS THE ACCOUNT (THIS IS THE FIX)
     const ownerCheck = await pool.query(
       `SELECT user_id FROM accounts WHERE id = $1`,
       [accountId],
@@ -143,9 +136,6 @@ router.post('/:accountId/transfer', authenticateToken, async (req, res) => {
   }
 });
 
-/* =========================
-   REQUEST LOAN
-========================= */
 router.post('/:accountId/loan', authenticateToken, async (req, res) => {
   const { accountId } = req.params;
   const { amount } = req.body;
@@ -187,9 +177,6 @@ router.post('/:accountId/loan', authenticateToken, async (req, res) => {
   }
 });
 
-/* =========================
-   ADMIN — CLOSE ACCOUNT
-========================= */
 router.delete(
   '/by-username',
   authenticateToken,
